@@ -40,4 +40,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("androidx.fragment:fragment:1.8.9")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.room:room-runtime:2.7.2")
+    annotationProcessor("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.9.3")
+    implementation("androidx.lifecycle:lifecycle-runtime:2.9.3")
 }
