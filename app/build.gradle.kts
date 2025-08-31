@@ -47,4 +47,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.7.2")
     implementation("androidx.lifecycle:lifecycle-livedata:2.9.3")
     implementation("androidx.lifecycle:lifecycle-runtime:2.9.3")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("androidx.activity:activity:1.10.1")
 }
