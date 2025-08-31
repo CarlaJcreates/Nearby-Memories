@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="12dp" android:orientation="horizontal"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgThumb" android:layout_width="56dp" android:layout_height="56dp"
+        android:scaleType="centerCrop" android:src="@android:drawable/ic_menu_camera"/>
+
+    <LinearLayout
+        android:layout_width="0dp" android:layout_height="wrap_content"
+        android:layout_weight="1" android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textStyle="bold" android:textSize="16sp" android:text="Title"/>
+
+        <TextView
+            android:id="@+id/txtCoords"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="12sp" android:text="0.0, 0.0"/>
+    </LinearLayout>
+</LinearLayout>
