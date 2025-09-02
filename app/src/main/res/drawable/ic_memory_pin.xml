@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple pin foreground: path from Material 'place' icon, scaled to our viewport -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="nonZero"
+        android:pathData="
+            M54,10
+            c-17.7,0 -32,14.3 -32,32
+            c0,26.7 32,56 32,56
+            s32,-29.3 32,-56
+            c0,-17.7 -14.3,-32 -32,-32
+            z
+            M54,34
+            c6.6,0 12,5.4 12,12
+            s-5.4,12 -12,12
+            s-12,-5.4 -12,-12
+            s5.4,-12 12,-12
+            z" />
+</vector>
