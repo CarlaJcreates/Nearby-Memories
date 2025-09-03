@@ -172,18 +172,6 @@ public class MapFragment extends Fragment {
             });
         }
 
-        // Toggle scope button (Jamaica <-> Worldwide)
-        ImageButton btnScope = view.findViewById(R.id.btnScope);
-        if (btnScope != null) {
-            btnScope.setOnClickListener(v -> {
-                jamaicaFirst = !jamaicaFirst;
-                applyPlacesScope(ac, jamaicaFirst);
-                Toast.makeText(requireContext(),
-                        jamaicaFirst ? "Searching Jamaica first" : "Searching worldwide",
-                        Toast.LENGTH_SHORT).show();
-            });
-        }
-
         // Map ready
         mapFrag.getMapAsync(googleMap -> {
             googleMap.getUiSettings().setZoomControlsEnabled(true);
@@ -451,7 +439,7 @@ public class MapFragment extends Fragment {
             ac.setLocationBias(JAMAICA_BOUNDS);
             // To strictly limit results within the rectangle, uncomment:
             // ac.setLocationRestriction(JAMAICA_BOUNDS);
-            ac.setHint("Search Jamaica…");
+            ac.setHint("Search Location…");
         } else {
             ac.setCountries(Collections.emptyList()); // <-- no restriction (avoid null ambiguity)
             ac.setLocationBias(null);

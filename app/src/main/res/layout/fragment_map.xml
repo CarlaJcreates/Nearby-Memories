@@ -1,39 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <!-- Map container -->
+    <!-- Top app bar (under the status bar) -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:title="Nearby Memories"
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Content area below toolbar -->
     <FrameLayout
-        android:id="@+id/mapContainer"
+        android:id="@+id/contentFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!-- Places Autocomplete UI -->
-    <fragment
-        android:id="@+id/autoCompleteFragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp" />
+        <!-- Map goes here (you replace this in code with SupportMapFragment) -->
+        <FrameLayout
+            android:id="@+id/mapContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <!-- Scope toggle (JM/world) -->
-    <ImageButton
-        android:id="@+id/btnScope"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="8dp"
-        android:layout_gravity="top|end"
-        android:background="@android:color/transparent"
-        android:contentDescription="Toggle search scope"
-        android:src="@android:drawable/ic_menu_compass" />
+        <!-- SOLID white background behind Places widget -->
+        <FrameLayout
+            android:id="@+id/autoCompleteHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_gravity="top"
+            android:padding="8dp"
+            android:elevation="8dp"
+            android:background="@drawable/bg_places_bar">
 
-    <!-- Add Memory -->
+            <fragment
+                android:id="@+id/autoCompleteFragment"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <!-- FAB bottom-left -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
         android:src="@android:drawable/ic_input_add"
-        android:contentDescription="Add" />
-</FrameLayout>
+        android:contentDescription="Add"
+        app:layout_anchor="@id/contentFrame"
+        app:layout_anchorGravity="bottom|start"
+        android:layout_margin="16dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -15,6 +15,8 @@ import com.example.nearbymemories.data.Memory;
 import com.example.nearbymemories.util.AppExecutors;
 import com.example.nearbymemories.util.Db;
 
+import java.lang.reflect.Field;
+
 public class DetailFragment extends Fragment {
     private static final String ARG_ID = "id";
 
@@ -32,35 +34,102 @@ public class DetailFragment extends Fragment {
     }
 
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView txtTitle = view.findViewById(R.id.dTitle);
-        TextView txtCoords = view.findViewById(R.id.dCoords);
+        TextView txtTitle   = view.findViewById(R.id.dTitle);
+        TextView txtCoords  = view.findViewById(R.id.dCoords);
         TextView txtContact = view.findViewById(R.id.dContact);
         TextView txtWeather = view.findViewById(R.id.dWeather);
-        ImageView img = view.findViewById(R.id.dImage);
+        ImageView img       = view.findViewById(R.id.dImage);
+        TextView tvNoImage  = view.findViewById(R.id.dNoImage);
 
-        int id = getArguments() != null ? getArguments().getInt(ARG_ID) : -1;
+        int id = (getArguments() != null) ? getArguments().getInt(ARG_ID, -1) : -1;
         if (id == -1) return;
 
         AppExecutors.IO.execute(() -> {
             Memory mem = Db.instance.memoryDao().getByIdSync(id);
             if (mem == null) return;
-            requireActivity().runOnUiThread(() -> {
-                txtTitle.setText(mem.title);
-                txtCoords.setText(mem.latitude + ", " + mem.longitude);
-                txtContact.setText(mem.contactName != null ? mem.contactName :
-                        (mem.contactUri != null ? mem.contactUri : "(none)"));
-                txtWeather.setText(mem.weatherSummary != null ? mem.weatherSummary : "(no network info)");
-                if (mem.mediaUri != null) img.setImageURI(Uri.parse(mem.mediaUri));
-                else img.setImageResource(android.R.drawable.ic_menu_report_image);
 
-                txtContact.setOnClickListener(v -> {
-                    if (mem.contactUri != null) {
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(mem.contactUri));
-                        startActivity(i);
+            requireActivity().runOnUiThread(() -> {
+                // Title + coordinates
+                String title = (mem.title != null && !mem.title.trim().isEmpty()) ? mem.title : "Untitled memory";
+                txtTitle.setText(title);
+                txtCoords.setText(String.format("%.5f, %.5f", mem.latitude, mem.longitude));
+
+                // Weather (simple default)
+                String weather = tryStringField(mem, "weatherSummary");
+                if (weather == null || weather.trim().isEmpty()) weather = "(no network info)";
+                txtWeather.setText(weather);
+
+                // Contact name & URI (with defaults)
+                String contactName = firstNonEmpty(
+                        tryStringField(mem, "contactName"),
+                        tryStringField(mem, "contactDisplayName")
+                );
+                String contactUri = firstNonEmpty(
+                        tryStringField(mem, "contactUri"),
+                        tryStringField(mem, "contactURI") // just in case
+                );
+
+                if (contactName != null) {
+                    txtContact.setText("Contact: " + contactName);
+                } else if (contactUri != null) {
+                    txtContact.setText("Contact available");
+                } else {
+                    txtContact.setText("No contact added");
+                }
+
+                // Make contact clickable only if we have a URI
+                txtContact.setOnClickListener(null);
+                if (contactUri != null) {
+                    txtContact.setOnClickListener(v -> {
+                        try {
+                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(contactUri));
+                            startActivity(i);
+                        } catch (Exception ignored) { }
+                    });
+                }
+
+                // Photo vs placeholder
+                String photo = firstNonEmpty(
+                        tryStringField(mem, "mediaUri"),
+                        tryStringField(mem, "photoUri")
+                );
+                if (photo != null) {
+                    try {
+                        img.setVisibility(View.VISIBLE);
+                        tvNoImage.setVisibility(View.GONE);
+                        img.setImageURI(Uri.parse(photo));
+                    } catch (Exception e) {
+                        // Fall back to placeholder if loading fails
+                        img.setImageDrawable(null);
+                        img.setVisibility(View.GONE);
+                        tvNoImage.setVisibility(View.VISIBLE);
                     }
-                });
+                } else {
+                    img.setImageDrawable(null);
+                    img.setVisibility(View.GONE);
+                    tvNoImage.setVisibility(View.VISIBLE);
+                }
             });
         });
+    }
+
+    // === tiny helpers ===
+    private @Nullable String firstNonEmpty(@Nullable String a, @Nullable String b) {
+        if (a != null && !a.trim().isEmpty()) return a;
+        if (b != null && !b.trim().isEmpty()) return b;
+        return null;
+    }
+
+    private @Nullable String tryStringField(Object obj, String fieldName) {
+        try {
+            Field f = obj.getClass().getDeclaredField(fieldName);
+            f.setAccessible(true);
+            Object v = f.get(obj);
+            return (v instanceof String) ? (String) v : null;
+        } catch (NoSuchFieldException ignore) {
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

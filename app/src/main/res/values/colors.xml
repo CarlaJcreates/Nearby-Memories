@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ic_launcher_bg">#009688</color> <!-- teal -->
+    <color name="places_bar_bg">#FAFAFA</color> <!-- off white -->
 </resources>

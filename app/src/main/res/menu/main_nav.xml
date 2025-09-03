@@ -6,6 +6,6 @@
         android:icon="@android:drawable/ic_menu_mylocation"/>
     <item
         android:id="@+id/menu_list"
-        android:title="List"
+        android:title="Saved Memories"
         android:icon="@android:drawable/ic_menu_agenda"/>
 </menu>
